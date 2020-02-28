@@ -2,7 +2,7 @@
 ## Front-end for XC=Basic. In the style of TurboPascal 3.0
 
 Csaba Fekete has written a really nice BASIC dialect compiler for the Commodore C64 8 bit
-computer. ==> see [https://github.com/neilsf/XC-BASIC]
+computer. ==> see https://github.com/neilsf/XC-BASIC
 
 I wrote this little bash script as a front end to simplify the Edit/Compile/Run
 loop. I based the look/function on TurboPascal 3.0 for CP/M --- I felt it
