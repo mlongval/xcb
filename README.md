@@ -22,9 +22,9 @@ XC_MY_EDITOR="vim"
 #XC_MY_EDITOR="nano"
 ```
 
-###Running xcb:
+### Running xcb:
 
-####xcb workfile.bas outfile.prg
+#### xcb workfile.bas outfile.prg
 
 ```
     XC=Basic --- A 6502 BASIC Compiler
