@@ -1,0 +1,149 @@
+#!/bin/bash
+
+# Frontend to XC=Basic 6502 Basic Compiler for C64
+
+# Program requires fzf (fuzzy finder)
+# install with : "sudo apt install fzf"
+
+# **** Setup globals ****
+
+# Preferences
+XC_MY_EDITOR="vim"
+#XC_MY_EDITOR="nano"
+
+# executables --- they must be in your $PATH
+XC_ASSEMBLER=`which dasm`
+XC_COMPILER=`which xcbasic64`
+XC_MACHINE=`which x64`
+XC_EDITOR=`which ${XC_MY_EDITOR}`
+
+# global variables
+XC_WORKFILE="$1"
+XC_OUTPUTFILE="$2"
+XC_AUTHOR="(C) Csaba Fekete\nhttps://github.com/neilsf/XC-BASIC"
+XC_TITLE="XC=Basic --- A 6502 BASIC Compiler"
+
+# screen video shortcuts
+R=$(tput rev)       # Reverse text
+N=$(tput sgr0)      # Normal text
+
+# **** Function definitions ****
+xc_print_author () {
+    echo -e $XC_AUTHOR
+}
+
+xc_print_title () {
+    echo -e $XC_TITLE
+}
+
+xc_print_paths () {
+    echo -e "\nExecutable paths:"
+    echo -e "Assembler: " $XC_ASSEMBLER
+    echo -e "Compiler: " $XC_COMPILER
+    echo -e "Machine: " $XC_MACHINE
+    echo -e "Editor: " $XC_EDITOR
+}
+
+xc_get_workfile () {            # get a filename from user
+    XC_WORKFILE=`ls -1 | fzf`
+    xc_build_menu1
+}
+
+xc_get_outfile () {            # get a filename from user
+    printf "Enter Output filename (*.prg) > "
+    read XC_OUTPUTFILE
+}
+
+xc_screen_refresh () {
+    clear
+    xc_print_title
+    xc_print_author
+    xc_print_paths
+}
+
+xc_edit_workfile () {
+    eval $XC_EDITOR $XC_WORKFILE
+}
+
+xc_compile_workfile () {
+    eval $XC_COMPILER $XC_WORKFILE $XC_OUTPUTFILE
+}
+
+xc_run_prg () {
+    eval $XC_MACHINE $XC_OUTPUTFILE
+}
+
+xc_build_menu1 () {
+    XC_MENU1_PART1="\n${R}W${N}ork File: $XC_WORKFILE\n"
+    XC_MENU1_PART1+="\n${R}O${N}utput File: $XC_OUTPUTFILE\n"
+
+    XC_MENU1_PART2="\n${R}E${N}dit\t"
+    XC_MENU1_PART2+="${R}R${N}un\t"
+    XC_MENU1_PART2+="${R}C${N}ompile\t"
+    XC_MENU1_PART2+="${R}Q${N}uit\t"
+
+    XC_MENU1="$XC_MENU1_PART1$XC_MENU1_PART2"
+}
+
+xc_print_menu1 () {
+    echo -e $XC_MENU1
+}
+
+xc_run_menu1 () {
+    printf "\nPlease select command > "
+    read XC_MENU1_REPLY
+
+    case $XC_MENU1_REPLY in
+        w | W)
+            echo -e "\n==> Get Workfile\n"
+            xc_get_workfile
+            ;;
+        e | E)
+            echo -e "\n==> Edit Workfile\n"
+            xc_edit_workfile
+            ;;
+        c | C)
+            echo -e "\n==> Compile Workfile\n"
+            xc_compile_workfile
+            ;;
+        r | R)
+            echo -e "\n==> Run Compiled Workfile\n"
+            xc_run_prg
+            ;;
+        q | Q)
+            echo -e "\n==> Quit\n"
+            echo -e "\n***** Thanks for using XC=Basic *****\nBye!\n"
+            exit
+            ;;
+        o | O)
+            echo -e "\n===> Get Output file\n"
+            xc_get_outfile
+            xc_build_menu1
+            ;;
+        *)
+            echo -e "HAPPY HAPPY HAPPY!"
+            xc_screen_refresh
+            ;;
+    esac
+}
+
+xc_first_start () {
+    xc_build_menu1
+    xc_screen_refresh
+}
+
+xc_main_loop (){
+    while :
+    do
+        xc_print_menu1
+        xc_run_menu1
+    done
+}
+
+# **** Main ****
+
+clear
+xc_first_start
+xc_main_loop
+
+# **** Program End ****
