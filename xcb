@@ -1,11 +1,12 @@
 #!/bin/bash
 
 # Frontend to XC=Basic 6502 Basic Compiler for C64
+# Michael Longval mlongval@gmail.com
+# https://github.com/mlongval/xcb
+# Version Beta 1.1
+# Date 29.02.2020
 
-# Program requires fzf (fuzzy finder)
-# install with : "sudo apt install fzf"
-
-# **** Setup globals ****
+# **** Setup ****
 
 # Preferences
 XC_MY_EDITOR="vim"
@@ -17,17 +18,25 @@ XC_COMPILER=`which xcbasic64`
 XC_MACHINE=`which x64`
 XC_EDITOR=`which ${XC_MY_EDITOR}`
 
+# constants
+XC_AUTHOR="(C) Csaba Fekete\nhttps://github.com/neilsf/XC-BASIC"
+XC_TITLE="XC=Basic --- A 6502 BASIC Compiler"
+XC_TEMPLATE='; XC=Basic Template\n'
+XC_TEMPLATE+='; (C) Csaba Fekete -- '
+XC_TEMPLATE+='https://github.com/neilsf/XC-BASIC\n\n'
+XC_TEMPLATE+='print""\n'
+XC_TEMPLATE+='print "hello from xc=basic"\n'
+
 # global variables
 XC_WORKFILE="$1"
 XC_OUTPUTFILE="$2"
-XC_AUTHOR="(C) Csaba Fekete\nhttps://github.com/neilsf/XC-BASIC"
-XC_TITLE="XC=Basic --- A 6502 BASIC Compiler"
 
-# screen video shortcuts
+# terminal escape code shortcuts
 R=$(tput rev)       # Reverse text
 N=$(tput sgr0)      # Normal text
 
-# **** Function definitions ****
+
+# **** function definitions ****
 xc_print_author () {
     echo -e $XC_AUTHOR
 }
@@ -44,13 +53,11 @@ xc_print_paths () {
     echo -e "Editor: " $XC_EDITOR
 }
 
-xc_get_workfile () {            # get a filename from user
-    XC_WORKFILE=`ls -1 | fzf`
-    xc_build_menu1
-}
-
 xc_get_outfile () {            # get a filename from user
-    printf "Enter Output filename (*.prg) > "
+    echo -e "XC=Basic .PRG files in current directory\n"
+    echo `find -maxdepth 1 -type f | grep .prg`
+    echo
+    echo -n "Enter Output filename (*.prg) > "
     read XC_OUTPUTFILE
 }
 
@@ -97,17 +104,18 @@ xc_run_menu1 () {
         w | W)
             echo -e "\n==> Get Workfile\n"
             xc_get_workfile
+            xc_build_menu1
             ;;
         e | E)
-            echo -e "\n==> Edit Workfile\n"
+            echo -e "\n==> Edit Workfile $XC_WORKFILE\n"
             xc_edit_workfile
             ;;
         c | C)
-            echo -e "\n==> Compile Workfile\n"
+            echo -e "\n==> Compile Workfile $XC_WORKFILE into $XC_OUTPUTFILE\n"
             xc_compile_workfile
             ;;
         r | R)
-            echo -e "\n==> Run Compiled Workfile\n"
+            echo -e "\n==> Run Compiled Output file $XC_OUTPUTFILE\n"
             xc_run_prg
             ;;
         q | Q)
@@ -116,7 +124,7 @@ xc_run_menu1 () {
             exit
             ;;
         o | O)
-            echo -e "\n===> Get Output file\n"
+            echo -e "\n==> Get Output file\n"
             xc_get_outfile
             xc_build_menu1
             ;;
@@ -132,6 +140,44 @@ xc_first_start () {
     xc_screen_refresh
 }
 
+xc_get_workfile() {
+    # this code shamelessly pilfered and then modified from
+    # Kris Occhipinti's tutorial
+    # https://www.youtube.com/watch?v=jeq161yD8tk
+
+    temp_files=($(find -maxdepth 1 -type f -print0 | xargs -0))
+
+    select USER_CHOICE in "Create new file" "${temp_files[@]}";
+    do
+        ARRAY_LENGTH=${#temp_files[@]}
+        # the following line ARRAY_LENGTH+=1 is to adjust the array
+        # to account for putting "Create new file" first
+        # in the menu --- ugly kludge
+        let "ARRAY_LENGTH += 1"
+        USER_REPLY=$REPLY
+        if ((USER_REPLY == 1))
+        then
+            echo -n "Please enter new BASIC source filename: "
+            read;
+            XC_WORKFILE=$REPLY
+            if [ ! -f "$WORKFILE" ]; then
+                `echo -e $XC_TEMPLATE > $XC_WORKFILE`
+            fi
+            break
+        elif ((USER_REPLY > 1 && USER_REPLY <= ARRAY_LENGTH))
+        then
+            XC_WORKFILE=$(basename $USER_CHOICE)
+            echo -e 'Workfile set to $XC_WORKFILE\n'
+            break
+        else
+            echo "Your choice is not valid. Please select again."
+        #finally
+        xc_build_menu1
+        fi
+    done
+}
+
+# **** does what it says .... ****
 xc_main_loop (){
     while :
     do
@@ -140,10 +186,10 @@ xc_main_loop (){
     done
 }
 
-# **** Main ****
+# **** Main program ****
 
 clear
 xc_first_start
 xc_main_loop
 
-# **** Program End ****
+# **** End program ****
