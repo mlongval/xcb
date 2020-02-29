@@ -26,6 +26,8 @@ XC_MY_EDITOR="vim"
 
 #### xcb workfile.bas outfile.prg
 
+Update 29.02.2020.
+- Removed the fuzzy finder requirement, file selection is via a bit of BASH code
 ```
     XC=Basic --- A 6502 BASIC Compiler
     (C) Csaba Fekete
@@ -51,8 +53,8 @@ markup limitations).
 
 Selecting menu letter and hitting enter will run menu entry.
 
-- W: change the work file name (you have to enter this manually)
-- O: change the ouput file name (this currently runs the FZF fuzzy finder program to select the filename, this will change.)
+- W: change the work file name
+- O: change the work file name (you have to enter this manually)
 - E: edit the workfile.
 - R: run the output file program (.prg)
 - C: compiler the workfile.
@@ -60,11 +62,7 @@ Selecting menu letter and hitting enter will run menu entry.
 
 __BUGS__:
 
-- Currently no way to create a new basic (.BAS) file from inside __xcb__. You have to `touch` it
-  from command line.
 - No support for complex projects with multiple files. __Coming soon.__
-- Needs "Fuzzy Finder" (fzf) to select basic (.BAS) file. This is not a bug, but I want to replace
-  it with another way to select files.
 
 
 Contact:  [mlongval@gmail.com](mlongval@gmail.com)
