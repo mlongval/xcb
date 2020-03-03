@@ -8,7 +8,7 @@ I wrote this little bash script as a front end to simplify the Edit/Compile/Run
 loop. I based the look/function on TurboPascal 3.0 for CP/M --- I felt it
 was appropriate for a compiler for an 8-bit computer.
 
-This is a Beta 1.0 Version, so things may not work as expected.
+This is Beta quality software, so things are unfinished.
 
 Quick info: **xcb** will look for executables (dasm, xcbasic64, x64, text editor) in your $PATH.
 
@@ -22,12 +22,16 @@ XC_MY_EDITOR="vim"
 #XC_MY_EDITOR="nano"
 ```
 
+### Versions
+
+ - Update 29.02.2020:
+  Removed the fuzzy finder requirement, file selection is via a bit of BASH code.
+
 ### Running xcb:
 
 #### xcb workfile.bas outfile.prg
 
-Update 29.02.2020.
-- Removed the fuzzy finder requirement, file selection is via a bit of BASH code
+#### Main screen
 ```
     XC=Basic --- A 6502 BASIC Compiler
     (C) Csaba Fekete
