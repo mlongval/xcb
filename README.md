@@ -13,7 +13,7 @@ XCB is little bash script front-end to the Edit/Compile/Run loop.
 Look'n'Feel is based on TurboPascal 3.0 for CP/M --- seemed appropriate for a compiler for an old 8-bit computer.
 
 ## Please note:
-==> This is Alpha quality software, things are rough, unfinished and may ass'plode yer computer. :stick_out_tongue: <==
+==> This is Alpha quality software, things are rough, unfinished and may ass'plode yer computer. ;-) <==
 
 ## Getting Started
 
